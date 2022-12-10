@@ -1,0 +1,42 @@
+﻿@page "/counter"
+@implements IDisposable
+@inject CurrentCountStore ScopedStore
+@inject SingletonCurrentCountStore SingletonStore
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Transient Counter</h1>
+<p>This counter is transient. It will be reset to 0 if you navigate to other pages.</p>
+<p role="status">Current count: @TransientStore.State</p>
+<button class="btn btn-primary" @onclick=TransientStore.Increment>Click me</button>
+
+<hr/>
+
+<h1>Scoped Counter</h1>
+<p>This counter is scoped to current web page. It will be reset to 0 if you refresh the page.</p>
+<p role="status">Current count: @ScopedStore.State</p>
+<button class="btn btn-primary" @onclick=ScopedStore.Increment>Click me</button>
+
+<hr />
+
+<h1>Singleton Counter</h1>
+<p>This counter is singleton. It will be shared across all visitors.</p>
+<p>You can subscribe to the store to get realtime updates.</p>
+<p role="status">Current count: @SingletonStore.State</p>
+<button class="btn btn-primary" @onclick=SingletonStore.Increment>Click me</button>
+
+@code {
+    private CurrentCountStore TransientStore = new();
+    private IDisposable? SingletonStoreSubscription;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        SingletonStoreSubscription = SingletonStore.Subscribe(async _ => await InvokeAsync(StateHasChanged));
+    }
+
+    public void Dispose()
+    {
+        SingletonStoreSubscription?.Dispose();
+    }
+}
