@@ -1,0 +1,19 @@
+﻿@page "/scoped-counter"
+@inject CurrentCountStore _scopedStore
+
+<PageTitle>Scoped Counter</PageTitle>
+
+<h1>Scoped Counter</h1>
+<p>This counter is scoped to current web page. It will be reset to 0 if you refresh the page.</p>
+<p role="status">Current count: @_scopedStore.State</p>
+<button class="btn btn-primary" @onclick=_scopedStore.Increment>Click me</button>
+
+@code {
+    protected override void OnInitialized()
+    {
+        _scopedStore.Subscribe(
+            onNext: _ => InvokeAsync(StateHasChanged),
+            token: DisposalToken
+        );
+    }
+}

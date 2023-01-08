@@ -1,0 +1,20 @@
+﻿@page "/singleton-counter"
+@inject SingletonCurrentCountStore _singletonStore
+
+<PageTitle>Singleton Counter</PageTitle>
+
+<h1>Singleton Counter</h1>
+<p>This counter is singleton. It will be shared across all visitors.</p>
+<p>You can subscribe to the store to get realtime updates.</p>
+<p role="status">Current count: @_singletonStore.State</p>
+<button class="btn btn-primary" @onclick=_singletonStore.Increment>Click me</button>
+
+@code {
+    protected override void OnInitialized()
+    {
+        _singletonStore.Subscribe(
+            onNext: _ => InvokeAsync(StateHasChanged),
+            token: DisposalToken
+        );
+    }
+}

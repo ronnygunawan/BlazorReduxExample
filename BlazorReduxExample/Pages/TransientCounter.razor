@@ -1,0 +1,12 @@
+﻿@page "/transient-counter"
+
+<PageTitle>Transient Counter</PageTitle>
+
+<h1>Transient Counter</h1>
+<p>This counter is transient. It will be reset to 0 if you navigate to other pages.</p>
+<p role="status">Current count: @_transientStore.State</p>
+<button class="btn btn-primary" @onclick=_transientStore.Increment>Click me</button>
+
+@code {
+    private CurrentCountStore _transientStore = new();
+}
